@@ -4,7 +4,6 @@ import torch
 from PIL import Image
 import io
 import numpy as np
-from skimage.io import imsave
 
 
 import sys

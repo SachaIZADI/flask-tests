@@ -24,17 +24,13 @@ def predict():
             image = np.asarray(image)
             image = image / 255
 
-            dirname = os.path.dirname(__file__)
-            file_name = os.path.join(dirname, 'static', 'models', 'conv_class.pk')
-            mnist_clf = torch.load(file_name)
-
             y_pred = mnist_clf(torch.from_numpy(image).resize_(1, 1, 28, 28).float())
             y_pred = torch.max(y_pred.data, 1)
             proba = np.exp(y_pred[0].numpy()[0])
             label_pred = y_pred[1].numpy()[0]
 
-            if y_pred == 0:
-                y_pred = 8
+            if label_pred == 0:
+                label_pred = 8
 
             return jsonify({"predicted_label":int(label_pred), "probability":float(proba)})
 
@@ -64,6 +60,11 @@ def return_image():
 
 
 if __name__ == '__main__':
+    print(("* Loading Keras model and Flask starting server..."
+           "please wait until server has fully started"))
+    dirname = os.path.dirname(__file__)
+    file_name = os.path.join(dirname, 'static', 'models', 'conv_class.pk')
+    mnist_clf = torch.load(file_name)
     app.run(debug=True)
     # app.run(host="0.0.0.0", port=5000)
 
